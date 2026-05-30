@@ -1,0 +1,16 @@
+v 3
+d barttest: Bar chart of group means with CI error bars and pairwise t-test brackets
+d
+d Significant comparisons are drawn with a solid bracket, non-significant with a
+d dashed bracket; each bracket is labeled with the mean difference and p-value
+d (or significance stars).
+d
+d Requires: Stata 16 or newer.
+d
+d Author: Wen-Cheng Lin, CAHSS, National Taiwan University
+d Source: https://github.com/jay8956047/stata-barttest
+d
+d Distribution-Date: 20260530
+d
+f barttest.ado
+f barttest.sthlp
