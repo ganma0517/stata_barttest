@@ -16,7 +16,7 @@ is labeled with the mean difference and the p-value (or significance stars).
 ### Option A — `net install` (recommended)
 
 ```stata
-net install barttest, from("https://raw.githubusercontent.com/jay8956047/stata-barttest/main/") replace
+net install barttest, from("https://raw.githubusercontent.com/ganma0517/stata_barttest/main/") replace
 ```
 
 ### Option B — `github install`
@@ -24,7 +24,7 @@ net install barttest, from("https://raw.githubusercontent.com/jay8956047/stata-b
 Requires the community `github` command (`ssc install github` once), then:
 
 ```stata
-github install jay8956047/stata-barttest
+github install ganma0517/stata_barttest
 ```
 
 After installing, read the help and run the example:
@@ -76,7 +76,7 @@ See `help barttest` for full documentation and examples.
 ## Citation
 
 Lin, Wen-Cheng (2026). *barttest: Bar chart of group means with CI and pairwise
-t-test brackets.* https://github.com/jay8956047/stata-barttest
+t-test brackets.* https://github.com/ganma0517/stata_barttest
 
 ## License
 

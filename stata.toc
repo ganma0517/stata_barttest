@@ -1,4 +1,4 @@
 v 3
 d Stata packages by Wen-Cheng Lin
-d https://github.com/jay8956047/stata-barttest
+d https://github.com/ganma0517/stata_barttest
 p barttest  Bar chart with CI error bars and pairwise t-test brackets

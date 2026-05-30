@@ -140,4 +140,4 @@ group position labels are always kept. e.g. {cmd:xlabel(labsize(small) angle(45)
 
 {pstd}Wen-Cheng Lin{break}
 CAHSS, National Taiwan University{break}
-{browse "https://github.com/jay8956047/stata-barttest":github.com/jay8956047/stata-barttest}{p_end}
+{browse "https://github.com/ganma0517/stata_barttest":github.com/ganma0517/stata_barttest}{p_end}
