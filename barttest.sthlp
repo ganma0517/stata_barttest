@@ -135,31 +135,41 @@ group position labels are always kept. e.g. {cmd:xlabel(labsize(small) angle(45)
 {marker examples}{...}
 {title:Examples}
 
-{pstd}Practice data with significant differences (load from the repo){p_end}
+{pstd}Load the bundled practice data (4 groups; mixed significance){p_end}
 {phang2}{cmd:. use "https://raw.githubusercontent.com/ganma0517/stata_barttest/main/barttest_demo.dta", clear}{p_end}
-{phang2}{cmd:. barttest outcome, by(treat)}{p_end}
 
-{pstd}Setup with built-in data{p_end}
-{phang2}{cmd:. sysuse auto, clear}{p_end}
-{phang2}{cmd:. replace price = price/1000}{p_end}
+{pstd}{bf:Basics}{p_end}
+{phang2}{cmd:. barttest outcome, by(treat)}                {it:// adjacent pairs, p-values}{p_end}
+{phang2}{cmd:. barttest outcome, by(treat) stars}          {it:// significance stars}{p_end}
+{phang2}{cmd:. barttest outcome, by(treat) level(90)}      {it:// 90% CI}{p_end}
+{phang2}{cmd:. barttest outcome, by(treat) alpha(0.01) stars}  {it:// stricter threshold}{p_end}
 
-{pstd}Basic: adjacent-group comparisons, 95% CI{p_end}
-{phang2}{cmd:. barttest price, by(rep78)}{p_end}
+{pstd}{bf:Choosing comparisons}{p_end}
+{phang2}{cmd:. barttest outcome, by(treat) compare("1/2 3/4")}{p_end}
+{phang2}{cmd:. barttest outcome, by(treat) compare("1/2 1/3 1/4 2/3 2/4 3/4")}{p_end}
+{phang2}{cmd:. barttest outcome, by(treat) base(1)}        {it:// every group vs control}{p_end}
+{phang2}{cmd:. barttest outcome, by(treat) base(1) stars}{p_end}
 
-{pstd}Value labels inside bars, larger bracket text, stars{p_end}
-{phang2}{cmd:. barttest price, by(rep78) valpos(inbar) valsize(medium) labsize(medium) stars}{p_end}
+{pstd}{bf:Value labels on bars}{p_end}
+{phang2}{cmd:. barttest outcome, by(treat) novalues}{p_end}
+{phang2}{cmd:. barttest outcome, by(treat) valpos(inbar)}  {it:// inside bar, centered}{p_end}
+{phang2}{cmd:. barttest outcome, by(treat) valpos(mean)}{p_end}
+{phang2}{cmd:. barttest outcome, by(treat) valsize(medium) decimals(2)}{p_end}
 
-{pstd}Hide value labels{p_end}
-{phang2}{cmd:. barttest price, by(rep78) novalues}{p_end}
+{pstd}{bf:Titles and axes}{p_end}
+{phang2}{cmd:. barttest outcome, by(treat) title("Score by group") ytitle("Mean") xtitle("Group")}{p_end}
+{phang2}{cmd:. barttest outcome, by(treat) labsize(medium)}{p_end}
+{phang2}{cmd:. barttest outcome, by(treat) ylabel(0(20)80, angle(0) grid)}{p_end}
+{phang2}{cmd:. barttest outcome, by(treat) xlabel(labsize(small) angle(20))}{p_end}
 
-{pstd}All pairs, 90% CI{p_end}
-{phang2}{cmd:. barttest price, by(rep78) level(90) compare("3/4 4/5 3/5")}{p_end}
+{pstd}{bf:Appearance}{p_end}
+{phang2}{cmd:. barttest outcome, by(treat) barwidth(0.5)}{p_end}
+{phang2}{cmd:. barttest outcome, by(treat) barcolor(navy) capcolor(maroon)}{p_end}
 
-{pstd}Reference group with significance stars{p_end}
-{phang2}{cmd:. barttest price, by(rep78) base(3) stars}{p_end}
+{pstd}{bf:Everything together, then save}{p_end}
+{phang2}{cmd:. barttest outcome, by(treat) stars valpos(inbar) valsize(medium) labsize(medium) ytitle("Test score") ylabel(0(20)80, angle(0) grid) saving(fig.png)}{p_end}
 
-{pstd}Custom appearance and export{p_end}
-{phang2}{cmd:. barttest price, by(rep78) barwidth(0.5) ytitle("Price (000s)") ylabel(0(2)16, angle(0) grid) saving(fig.png)}{p_end}
+{pstd}A full, runnable tutorial is in {bf:barttest_example.do} (see the repo).{p_end}
 
 
 {marker author}{...}
