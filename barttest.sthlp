@@ -175,6 +175,15 @@ group position labels are always kept. e.g. {cmd:xlabel(labsize(small) angle(45)
 {marker author}{...}
 {title:Author}
 
-{pstd}Wen-Cheng Lin{break}
-CAHSS, National Taiwan University{break}
+{pstd}{bf:Wen-Cheng Lin (林文正)}{break}
+PhD student, Department of Political Science, National Chengchi University{break}
+Postdoctoral research fellow, Institute of Sociology, Academia Sinica{break}
+Email: beck740517@gmail.com{break}
 {browse "https://github.com/ganma0517/stata_barttest":github.com/ganma0517/stata_barttest}{p_end}
+
+{pstd}This package is a collaboration between the author and Claude. It is still
+at an experimental stage and is intended mainly for presenting results from
+survey-experiment designs. Questions and feedback are very welcome.{p_end}
+
+{pstd}本套件是作者與 Claude 的協作成果，目前仍屬實驗性階段，主要用於調查實驗法的資訊呈現。
+若有任何問題，歡迎來信交流：beck740517@gmail.com{p_end}
