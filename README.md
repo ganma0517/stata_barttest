@@ -50,15 +50,6 @@ use "https://raw.githubusercontent.com/ganma0517/stata_barttest/main/barttest_de
 barttest outcome, by(treat)
 ```
 
-Or use Stata's built-in data:
-
-```stata
-sysuse auto, clear
-barttest price, by(rep78)
-```
-
-![significant example](example_significant.png)
-
 ## Examples: with vs. without a control group
 
 ```stata
@@ -75,6 +66,13 @@ barttest price, by(rep78) base(3)
 
 * With a control group + significance stars
 barttest price, by(rep78) base(3) stars
+```
+
+Download the full tutorial do-file and step through it:
+
+```stata
+copy "https://raw.githubusercontent.com/ganma0517/stata_barttest/main/barttest_example.do" barttest_example.do, replace
+doedit barttest_example.do
 ```
 
 A solid bracket = significant difference; dashed = non-significant. See
@@ -121,16 +119,16 @@ See `help barttest` for full documentation and examples.
 
 ## About the author
 
-**English.** I am Wen-Cheng Lin, a PhD student in the Department of Political
-Science at National Chengchi University, currently serving as a postdoctoral
-research fellow at the Institute of Sociology, Academia Sinica. This package is
-a collaboration between me and Claude. It is still at an experimental stage and
-is intended mainly for presenting results from survey-experiment designs. If you
-have any questions, you are warmly welcome to get in touch — beck740517@gmail.com
+I am Wen-Cheng Lin, a PhD student in the Department of Political Science at
+National Chengchi University, currently serving as a postdoctoral research fellow
+at the Institute of Sociology, Academia Sinica. This package is a collaboration
+between me and Claude. It is still at an experimental stage and is intended mainly
+for presenting results from survey-experiment designs. If you have any questions,
+you are warmly welcome to get in touch — beck740517@gmail.com
 
-**中文。** 我是林文正，政治大學政治學系博士生，目前在中央研究院社會學研究所擔任博士後研究員。
+我是林文正，政治大學政治學系博士生，目前在中央研究院社會學研究所擔任博士後研究員。
 本套件是我與 Claude 的協作成果，目前仍屬實驗性階段，主要用於調查實驗法（survey experiment）的
-資訊呈現。若有任何問題，歡迎寫信與我交流 — beck740517@gmail.com
+資訊呈現。若有任何問題，歡迎寫信與我交流。
 
 ## Citation
 
