@@ -50,6 +50,15 @@ use "https://raw.githubusercontent.com/ganma0517/stata_barttest/main/barttest_de
 barttest outcome, by(treat)
 ```
 
+Or use Stata's built-in data:
+
+```stata
+sysuse auto, clear
+barttest price, by(rep78)
+```
+
+![significant example](example_significant.png)
+
 ## Examples: with vs. without a control group
 
 ```stata
