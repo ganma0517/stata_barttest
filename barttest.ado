@@ -1,4 +1,4 @@
-*! barttest v1.3  30May2026
+*! barttest v1.4  31May2026
 *! Bar chart of group means with CI error bars and pairwise t-test brackets
 *! Significant comparison -> solid bracket; non-significant -> dashed bracket
 *!
@@ -28,6 +28,11 @@
 *!   barcolor(string)   bar fill color (default "26 71 95")
 *!   capcolor(string)   error-bar color (default red)
 *!   decimals(#)        decimals shown for means/diff (default 1)
+*!   novalues           do NOT print the mean value label on each bar
+*!   valpos(string)     position of the mean value label: top (above the CI,
+*!                      default) | mean (at the bar top) | inbar (inside bar)
+*!   valsize(string)    text size of the mean value label (default small)
+*!   labsize(string)    text size of the diff/p (or stars) bracket label
 *!   saving(string)     export path (e.g. "$out/fig.png")
 *!   name(string)       graph window name (default barttest)
 
@@ -40,6 +45,7 @@ program define barttest
           YLABel(string asis) XLABel(string asis) ///
           BARWidth(real 0.6) ///
           BARcolor(string) CAPcolor(string) Decimals(integer 1) ///
+          NOVALues VALPos(string) VALSize(string) LABSize(string) ///
           saving(string) name(string) ]
 
     marksample touse
@@ -61,6 +67,12 @@ program define barttest
         local xtitle `"`xtl'"'
     }
     if `"`ylabel'"' == "" local ylabel ", angle(0)"
+    if "`valsize'" == "" local valsize "small"
+    if "`valpos'"  == "" local valpos "top"
+    if !inlist("`valpos'","top","mean","inbar") {
+        di as error "valpos() must be top, mean, or inbar"
+        exit 198
+    }
     * strip a single layer of surrounding double quotes from titles (if user typed them)
     foreach t in title ytitle xtitle {
         local tv `"``t''"'
@@ -144,13 +156,26 @@ program define barttest
     local plot `"(bar `mean' `xpos', barwidth(`barwidth') color("`barcolor'")) "'
     local plot `"`plot' (rcap `hi' `lo' `xpos', lcolor(`capcolor') lwidth(medthick)) "'
 
-    * mean value labels centered above each bar
+    * mean value labels (optional, position configurable)
     local txt ""
-    foreach g of local glevs {
-        local lbltxt : display `fmt' `m`g''
-        local lbltxt = trim("`lbltxt'")
-        local ty = `ub`g'' + `span'*0.03
-        local txt `txt' text(`ty' `x`g'' "`lbltxt'", size(small) placement(c) color(black))
+    if "`novalues'" == "" {
+        foreach g of local glevs {
+            local lbltxt : display `fmt' `m`g''
+            local lbltxt = trim("`lbltxt'")
+            if "`valpos'" == "top" {
+                local ty = `ub`g'' + `span'*0.03
+                local vcol "black"
+            }
+            else if "`valpos'" == "mean" {
+                local ty = `m`g'' + `span'*0.03
+                local vcol "black"
+            }
+            else {   /* inbar */
+                local ty = `m`g'' - `span'*0.04
+                local vcol "white"
+            }
+            local txt `txt' text(`ty' `x`g'' "`lbltxt'", size(`valsize') placement(c) color(`vcol'))
+        }
     }
 
     * brackets
@@ -195,6 +220,8 @@ program define barttest
             local blbl "diff = `dnum', p = `pnum'"
             local bsize "vsmall"
         }
+        * user override of bracket label size
+        if "`labsize'" != "" local bsize "`labsize'"
         local txt `txt' text(`=`H'+`span'*0.045' `xmid' "`blbl'", size(`bsize') placement(c))
     }
 

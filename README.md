@@ -40,10 +40,22 @@ do barttest_example.do
 
 ## Quick start
 
+A practice dataset with clear, significant group differences is included.
+Load it directly from the repo (no install needed):
+
+```stata
+use "https://raw.githubusercontent.com/ganma0517/stata_barttest/main/barttest_demo.dta", clear
+barttest outcome, by(treat)
+```
+
+Or use Stata's built-in data:
+
 ```stata
 sysuse auto, clear
 barttest price, by(rep78)
 ```
+
+![significant example](example_significant.png)
 
 ## Examples: with vs. without a control group
 
@@ -83,6 +95,10 @@ barttest depvar [if] [in], by(groupvar) [options]
 | `barwidth(#)` | bar width | 0.6 |
 | `barcolor()` `capcolor()` | bar / error-bar colors | navy / red |
 | `decimals(#)` | decimals for means and diff | 1 |
+| `novalues` | hide the mean value label on each bar | off |
+| `valpos()` | value-label position: `top` / `mean` / `inbar` | top |
+| `valsize()` | mean value-label text size | small |
+| `labsize()` | diff/p (or stars) bracket-label text size | auto |
 | `title()` `ytitle()` `xtitle()` | titles | variable labels |
 | `ylabel()` | full y-axis label spec | `, angle(0)` |
 | `xlabel()` | extra x-axis label suboptions | — |
@@ -97,7 +113,8 @@ See `help barttest` for full documentation and examples.
 - `barttest.sthlp` — Stata help file
 - `barttest_example.do` — runnable examples (uses built-in `auto` data)
 - `barttest_example_control.do` — with vs. without a control group
-- `example_no_control.png`, `example_with_control.png` — demo figures
+- `barttest_demo.dta` — practice data with significant group differences
+- `example_no_control.png`, `example_with_control.png`, `example_significant.png` — demo figures
 - `barttest.pkg`, `stata.toc` — package metadata for `net install`
 
 ## Citation

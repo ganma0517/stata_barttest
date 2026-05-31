@@ -44,6 +44,10 @@
 {synopt:{opt barc:olor(string)}}bar fill color; default is {cmd:"26 71 95"}{p_end}
 {synopt:{opt capc:olor(string)}}error-bar color; default is {cmd:red}{p_end}
 {synopt:{opt d:ecimals(#)}}decimals shown for means and diff; default is {cmd:decimals(1)}{p_end}
+{synopt:{opt noval:ues}}do not print the mean value label on each bar{p_end}
+{synopt:{opt valp:os(string)}}position of mean value label: {cmd:top} (default), {cmd:mean}, or {cmd:inbar}{p_end}
+{synopt:{opt vals:ize(string)}}text size of mean value label; default {cmd:small}{p_end}
+{synopt:{opt labs:ize(string)}}text size of the diff/p (or stars) bracket label{p_end}
 {synopt:{opt title(string)}}graph title{p_end}
 {synopt:{opt ytitle(string)}}y-axis title; default = {it:depvar} label{p_end}
 {synopt:{opt xtitle(string)}}x-axis title; default = {it:groupvar} label{p_end}
@@ -101,6 +105,18 @@ colors.
 
 {phang}{opt decimals(#)} controls decimals for means and differences. Default 1.
 
+{phang}{opt novalues} hides the mean value label on each bar.
+
+{phang}{opt valpos(string)} sets where the mean value label is drawn:
+{cmd:top} (above the CI, default), {cmd:mean} (at the bar top), or
+{cmd:inbar} (inside the bar near the top, in white).
+
+{phang}{opt valsize(string)} sets the text size of the mean value label
+(e.g. {cmd:vsmall}, {cmd:small}, {cmd:medium}). Default {cmd:small}.
+
+{phang}{opt labsize(string)} sets the text size of the bracket (diff/p or stars)
+label, overriding the automatic default.
+
 {phang}{opt title(string)}, {opt ytitle(string)}, {opt xtitle(string)} set the
 graph and axis titles. Surrounding quotes you type are handled automatically.
 
@@ -118,12 +134,22 @@ group position labels are always kept. e.g. {cmd:xlabel(labsize(small) angle(45)
 {marker examples}{...}
 {title:Examples}
 
-{pstd}Setup{p_end}
+{pstd}Practice data with significant differences (load from the repo){p_end}
+{phang2}{cmd:. use "https://raw.githubusercontent.com/ganma0517/stata_barttest/main/barttest_demo.dta", clear}{p_end}
+{phang2}{cmd:. barttest outcome, by(treat)}{p_end}
+
+{pstd}Setup with built-in data{p_end}
 {phang2}{cmd:. sysuse auto, clear}{p_end}
 {phang2}{cmd:. replace price = price/1000}{p_end}
 
 {pstd}Basic: adjacent-group comparisons, 95% CI{p_end}
 {phang2}{cmd:. barttest price, by(rep78)}{p_end}
+
+{pstd}Value labels inside bars, larger bracket text, stars{p_end}
+{phang2}{cmd:. barttest price, by(rep78) valpos(inbar) valsize(medium) labsize(medium) stars}{p_end}
+
+{pstd}Hide value labels{p_end}
+{phang2}{cmd:. barttest price, by(rep78) novalues}{p_end}
 
 {pstd}All pairs, 90% CI{p_end}
 {phang2}{cmd:. barttest price, by(rep78) level(90) compare("3/4 4/5 3/5")}{p_end}
