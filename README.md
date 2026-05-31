@@ -40,8 +40,10 @@ do barttest_example.do
 
 ## Quick start
 
-A practice dataset with clear, significant group differences is included.
-Load it directly from the repo (no install needed):
+A practice dataset is included: **four groups** where adjacent comparisons are a
+mix of significant and non-significant (1 vs 2 ns, 2 vs 3 significant, 3 vs 4 ns),
+so you can see both solid and dashed brackets. Load it directly from the repo
+(no install needed):
 
 ```stata
 use "https://raw.githubusercontent.com/ganma0517/stata_barttest/main/barttest_demo.dta", clear
