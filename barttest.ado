@@ -1,4 +1,4 @@
-*! barttest v1.4  31May2026
+*! barttest v1.5  31May2026
 *! Bar chart of group means with CI error bars and pairwise t-test brackets
 *! Significant comparison -> solid bracket; non-significant -> dashed bracket
 *!
@@ -66,7 +66,11 @@ program define barttest
         if `"`xtl'"' == "" local xtl "`gv'"
         local xtitle `"`xtl'"'
     }
-    if `"`ylabel'"' == "" local ylabel ", angle(0)"
+    local ylabauto = 0
+    if `"`ylabel'"' == "" {
+        local ylabel ", angle(0)"
+        local ylabauto = 1
+    }
     if "`valsize'" == "" local valsize "small"
     if "`valpos'"  == "" local valpos "top"
     if !inlist("`valpos'","top","mean","inbar") {
@@ -151,6 +155,18 @@ program define barttest
     local tick = `span'*0.025
     local base = `ymax' + `step'*0.6
 
+    * default y-axis: start at 0 with a tidy step up to the data max (CI upper)
+    if `ylabauto' {
+        if      `ymax' <= 10  local ystep = 2
+        else if `ymax' <= 20  local ystep = 5
+        else if `ymax' <= 50  local ystep = 10
+        else if `ymax' <= 100 local ystep = 20
+        else if `ymax' <= 200 local ystep = 50
+        else                  local ystep = round(`ymax'/5)
+        local ytick = `ystep'*ceil(`ymax'/`ystep')
+        local ylabel "0(`ystep')`ytick', angle(0)"
+    }
+
     * ---- build twoway layers ----
     local fmt "%9.`decimals'f"
     local plot `"(bar `mean' `xpos', barwidth(`barwidth') color("`barcolor'")) "'
@@ -170,8 +186,8 @@ program define barttest
                 local ty = `m`g'' + `span'*0.03
                 local vcol "black"
             }
-            else {   /* inbar */
-                local ty = `m`g'' - `span'*0.04
+            else {   /* inbar: vertically centered in the bar */
+                local ty = `m`g''/2
                 local vcol "white"
             }
             local txt `txt' text(`ty' `x`g'' "`lbltxt'", size(`valsize') placement(c) color(`vcol'))

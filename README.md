@@ -96,7 +96,7 @@ barttest depvar [if] [in], by(groupvar) [options]
 | `barcolor()` `capcolor()` | bar / error-bar colors | navy / red |
 | `decimals(#)` | decimals for means and diff | 1 |
 | `novalues` | hide the mean value label on each bar | off |
-| `valpos()` | value-label position: `top` / `mean` / `inbar` | top |
+| `valpos()` | value-label position: `top` / `mean` / `inbar` (centered) | top |
 | `valsize()` | mean value-label text size | small |
 | `labsize()` | diff/p (or stars) bracket-label text size | auto |
 | `title()` `ytitle()` `xtitle()` | titles | variable labels |

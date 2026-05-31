@@ -45,7 +45,7 @@
 {synopt:{opt capc:olor(string)}}error-bar color; default is {cmd:red}{p_end}
 {synopt:{opt d:ecimals(#)}}decimals shown for means and diff; default is {cmd:decimals(1)}{p_end}
 {synopt:{opt noval:ues}}do not print the mean value label on each bar{p_end}
-{synopt:{opt valp:os(string)}}position of mean value label: {cmd:top} (default), {cmd:mean}, or {cmd:inbar}{p_end}
+{synopt:{opt valp:os(string)}}position of mean value label: {cmd:top} (default), {cmd:mean}, or {cmd:inbar} (centered in the bar){p_end}
 {synopt:{opt vals:ize(string)}}text size of mean value label; default {cmd:small}{p_end}
 {synopt:{opt labs:ize(string)}}text size of the diff/p (or stars) bracket label{p_end}
 {synopt:{opt title(string)}}graph title{p_end}
@@ -122,7 +122,8 @@ graph and axis titles. Surrounding quotes you type are handled automatically.
 
 {phang}{opt ylabel(string)} passes a full y-axis label specification, e.g.
 {cmd:ylabel(0(20)100, angle(0) grid)}. To pass only suboptions, prefix a comma:
-{cmd:ylabel(, labsize(small))}. Default {cmd:", angle(0)"}.
+{cmd:ylabel(, labsize(small))}. By default the y-axis starts at 0 with a tidy
+step (bars are not visually exaggerated); pass your own {opt ylabel()} to override.
 
 {phang}{opt xlabel(string)} appends extra suboptions to the x-axis labels; the
 group position labels are always kept. e.g. {cmd:xlabel(labsize(small) angle(45))}.
