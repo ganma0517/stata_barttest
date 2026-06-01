@@ -38,6 +38,8 @@
 {synopt:{opt compare(string)}}space-separated pairs {cmd:"a/b c/d ..."} using group {it:values}; default = adjacent pairs{p_end}
 {synopt:{opt base(#)}}reference group: compare every other group against it (overrides {opt compare()}){p_end}
 {synopt:{opt stars}}label brackets with significance stars (* ** ***, ns) instead of the p-value{p_end}
+{synopt:{opt panel(varname)}}facet: draw one sub-plot per level of this variable and combine them{p_end}
+{synopt:{opt cols(#)}}number of columns when faceting (default: auto){p_end}
 
 {syntab:Appearance}
 {synopt:{opt barw:idth(#)}}bar width; default is {cmd:barwidth(0.6)}{p_end}
@@ -149,6 +151,10 @@ group position labels are always kept. e.g. {cmd:xlabel(labsize(small) angle(45)
 {phang2}{cmd:. barttest outcome, by(treat) compare("1/2 1/3 1/4 2/3 2/4 3/4")}{p_end}
 {phang2}{cmd:. barttest outcome, by(treat) base(1)}        {it:// every group vs control}{p_end}
 {phang2}{cmd:. barttest outcome, by(treat) base(1) stars}{p_end}
+
+{pstd}Faceted: one sub-plot per level of a panel variable{p_end}
+{phang2}{cmd:. use "https://raw.githubusercontent.com/ganma0517/stata_barttest/main/barttest_panel_demo.dta", clear}{p_end}
+{phang2}{cmd:. barttest resp, by(arm) panel(site) stars}{p_end}
 
 {pstd}{bf:Value labels on bars}{p_end}
 {phang2}{cmd:. barttest outcome, by(treat) novalues}{p_end}

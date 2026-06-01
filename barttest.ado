@@ -1,4 +1,4 @@
-*! barttest v1.5  31May2026
+*! barttest v1.6  2Jun2026
 *! Bar chart of group means with CI error bars and pairwise t-test brackets
 *! Significant comparison -> solid bracket; non-significant -> dashed bracket
 *!
@@ -15,6 +15,8 @@
 *!                      (overrides compare()). e.g. base(1) -> 1 vs each other.
 *!   stars              label brackets with significance stars instead of p-value
 *!                      (* p<.05, ** p<.01, *** p<.001, ns otherwise)
+*!   panel(varname)     facet: draw one sub-plot per level and combine them
+*!   cols(#)            number of columns when faceting (default: auto)
 *!   title(string)      graph title
 *!   ytitle(string)     y-axis title (default = depvar label)
 *!   xtitle(string)     x-axis title (default = groupvar label)
@@ -41,6 +43,7 @@ program define barttest
     syntax varname(numeric) [if] [in], by(varname) ///
         [ Level(real 95) Alpha(real 0.05) Compare(string) ///
           BASE(string) STARs ///
+          PANel(varname) COLs(integer 0) ///
           title(string asis) ytitle(string asis) xtitle(string asis) ///
           YLABel(string asis) XLABel(string asis) ///
           BARWidth(real 0.6) ///
@@ -48,9 +51,63 @@ program define barttest
           NOVALues VALPos(string) VALSize(string) LABSize(string) ///
           saving(string) name(string) ]
 
-    marksample touse
     local dv `varlist'
     local gv `by'
+
+    * =====================================================
+    * PANEL MODE: draw one barttest per level of panel()
+    * and combine them into a single faceted graph.
+    * =====================================================
+    if "`panel'" != "" {
+        if "`name'" == "" local name "barttest"
+        tempvar ptouse
+        marksample ptouse, novarlist
+        markout `ptouse' `dv' `gv' `panel'
+        quietly levelsof `panel' if `ptouse', local(plevs)
+        local npan : word count `plevs'
+        if `cols'==0 {
+            if `npan'<=2 local cols = `npan'
+            else if `npan'<=4 local cols = 2
+            else local cols = 3
+        }
+        * collect passthrough options
+        local opts `"level(`level') alpha(`alpha') barwidth(`barwidth') decimals(`decimals')"'
+        if "`compare'"!=""   local opts `"`opts' compare(`compare')"'
+        if "`base'"!=""      local opts `"`opts' base(`base')"'
+        if "`stars'"!=""     local opts `"`opts' stars"'
+        if "`novalues'"!=""  local opts `"`opts' novalues"'
+        if "`valpos'"!=""    local opts `"`opts' valpos(`valpos')"'
+        if "`valsize'"!=""   local opts `"`opts' valsize(`valsize')"'
+        if "`labsize'"!=""   local opts `"`opts' labsize(`labsize')"'
+        if "`barcolor'"!=""  local opts `"`opts' barcolor(`barcolor')"'
+        if "`capcolor'"!=""  local opts `"`opts' capcolor(`capcolor')"'
+        if `"`ytitle'"'!=""  local opts `"`opts' ytitle(`"`ytitle'"')"'
+        if `"`xtitle'"'!=""  local opts `"`opts' xtitle(`"`xtitle'"')"'
+        if `"`ylabel'"'!=""  local opts `"`opts' ylabel(`"`ylabel'"')"'
+        if `"`xlabel'"'!=""  local opts `"`opts' xlabel(`"`xlabel'"')"'
+
+        local subnames ""
+        local j = 0
+        foreach pl of local plevs {
+            local ++j
+            local plab : label (`panel') `pl'
+            if `"`plab'"'=="" local plab "`pl'"
+            local sub`j' "_bt_panel`j'"
+            barttest `dv' if `panel'==`pl' & `ptouse', by(`gv') `opts' ///
+                title("`plab'") name(`sub`j'')
+            local subnames `subnames' `sub`j''
+        }
+        graph combine `subnames', cols(`cols') ///
+            `=cond(`"`title'"'=="","",`"title(`"`title'"')"')' ///
+            graphregion(color(white)) name(`name', replace)
+        if `"`saving'"' != "" {
+            quietly graph export `"`saving'"', replace width(2600)
+            di as result "saved: `saving'"
+        }
+        exit
+    }
+
+    marksample touse
     markout `touse' `gv'
 
     if "`barcolor'" == "" local barcolor "26 71 95"
