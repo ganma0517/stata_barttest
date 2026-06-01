@@ -43,7 +43,8 @@ program define barttest
     syntax varname(numeric) [if] [in], by(varname) ///
         [ Level(real 95) Alpha(real 0.05) Compare(string) ///
           BASE(string) STARs ///
-          PANel(varname) COLs(integer 0) ///
+          PANel(varname) COLs(integer 0) YCOMMON ///
+          YTOPForce(real -1) ///
           title(string asis) ytitle(string asis) xtitle(string asis) ///
           YLABel(string asis) XLABel(string asis) ///
           BARWidth(real 0.6) ///
@@ -86,6 +87,37 @@ program define barttest
         if `"`ylabel'"'!=""  local opts `"`opts' ylabel(`"`ylabel'"')"'
         if `"`xlabel'"'!=""  local opts `"`opts' xlabel(`"`xlabel'"')"'
 
+        * ycommon: give every panel the SAME y-axis top so bar heights match.
+        * Derive it from the global CI-upper max and the largest number of
+        * brackets drawn in any panel (so the tallest stack still fits).
+        if "`ycommon'"!="" {
+            * global upper bound of the data/CI across all panels
+            tempvar ghi
+            quietly gen double `ghi' = .
+            quietly levelsof `gv' if `ptouse', local(_gg)
+            local gymax = .
+            foreach pl of local plevs {
+                foreach gg of local _gg {
+                    quietly ci means `dv' if `ptouse' & `panel'==`pl' & `gv'==`gg', level(`level')
+                    if r(ub) > `gymax' | `gymax'==. local gymax = r(ub)
+                }
+            }
+            * max number of comparisons across panels
+            quietly levelsof `gv' if `ptouse', local(_gg)
+            local kk : word count `_gg'
+            if "`base'"!=""        local ncmax = `kk' - 1
+            else if "`compare'"!="" {
+                local ncmax : word count `compare'
+            }
+            else                   local ncmax = `kk' - 1
+            * replicate the main-flow geometry: span=gymax, step=span*0.11
+            local gspan = `gymax'
+            local gstep = `gspan'*0.11
+            local gbase = `gymax' + `gstep'*0.6
+            local gytop = `gbase' + `ncmax'*`gstep' + `gspan'*0.05
+            local opts `"`opts' ytopforce(`gytop')"'
+        }
+
         local subnames ""
         local j = 0
         foreach pl of local plevs {
@@ -98,6 +130,7 @@ program define barttest
             local subnames `subnames' `sub`j''
         }
         graph combine `subnames', cols(`cols') ///
+            `=cond("`ycommon'"=="","","ycommon")' ///
             `=cond(`"`title'"'=="","",`"title(`"`title'"')"')' ///
             graphregion(color(white)) name(`name', replace)
         if `"`saving'"' != "" {
@@ -299,6 +332,8 @@ program define barttest
     }
 
     local ytop = `base' + `nc'*`step' + `span'*0.05
+    * common-height override (set by panel + ycommon)
+    if `ytopforce' > 0 local ytop = `ytopforce'
 
     * ---- draw ----
     twoway `plot' ///

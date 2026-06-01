@@ -95,6 +95,9 @@ comparing the same grouping across sites, markers, time points, etc.
 ```stata
 use "https://raw.githubusercontent.com/ganma0517/stata_barttest/main/barttest_panel_demo.dta", clear
 barttest resp, by(arm) panel(site) stars
+
+* add ycommon so bar heights are directly comparable across panels
+barttest resp, by(arm) panel(site) stars ycommon
 ```
 
 ![panel example](example_panel.png)
@@ -115,6 +118,7 @@ barttest depvar [if] [in], by(groupvar) [options]
 | `stars` | label brackets with `* ** ***` / `ns` | off (shows p) |
 | `panel(varname)` | facet: one sub-plot per level | — |
 | `cols(#)` | columns when faceting | auto |
+| `ycommon` | shared y-axis across panels (matching bar heights) | off |
 | `barwidth(#)` | bar width | 0.6 |
 | `barcolor()` `capcolor()` | bar / error-bar colors | navy / red |
 | `decimals(#)` | decimals for means and diff | 1 |
