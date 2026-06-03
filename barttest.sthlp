@@ -104,7 +104,13 @@ against it. Overrides {opt compare()}.
 {phang}{opt barwidth(#)} sets bar width. Default 0.6.
 
 {phang}{opt barcolor(string)} / {opt capcolor(string)} set the bar and error-bar
-colors.
+colors (one colour for all bars).
+
+{phang}{opt colors(string)} gives specific bars their own colour as
+{it:value=colour} pairs, e.g.
+{cmd:colors(KMT=blue DPP=green TPP=gs8 中立無反應=black)}. The key may be the
+group's value label or its raw value (use the raw value when the label contains
+spaces); bars not listed keep {opt barcolor()}.
 
 {phang}{opt decimals(#)} controls decimals for means and differences. Default 1.
 

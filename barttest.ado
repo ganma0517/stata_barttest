@@ -27,7 +27,9 @@
 *!                      position labels (which are always kept). e.g.
 *!                      xlabel(labsize(small) angle(45))
 *!   barwidth(#)        bar width (default 0.6)
-*!   barcolor(string)   bar fill color (default "26 71 95")
+*!   barcolor(string)   bar fill color for all bars (default "26 71 95")
+*!   colors(string)     explicit colour per group as value=colour pairs, e.g.
+*!                      colors(KMT=blue DPP=green TPP=gs8 中立無反應=black)
 *!   capcolor(string)   error-bar color (default red)
 *!   decimals(#)        decimals shown for means/diff (default 1)
 *!   novalues           do NOT print the mean value label on each bar
@@ -48,7 +50,7 @@ program define barttest
           title(string asis) ytitle(string asis) xtitle(string asis) ///
           YLABel(string asis) XLABel(string asis) ///
           BARWidth(real 0.6) ///
-          BARcolor(string) CAPcolor(string) Decimals(integer 1) ///
+          BARcolor(string) COLORS(string asis) CAPcolor(string) Decimals(integer 1) ///
           NOVALues VALPos(string) VALSize(string) LABSize(string) ///
           saving(string) name(string) ]
 
@@ -81,6 +83,7 @@ program define barttest
         if "`valsize'"!=""   local opts `"`opts' valsize(`valsize')"'
         if "`labsize'"!=""   local opts `"`opts' labsize(`labsize')"'
         if "`barcolor'"!=""  local opts `"`opts' barcolor(`barcolor')"'
+        if `"`colors'"'!=""  local opts `"`opts' colors(`colors')"'
         if "`capcolor'"!=""  local opts `"`opts' capcolor(`capcolor')"'
         if `"`ytitle'"'!=""  local opts `"`opts' ytitle(`"`ytitle'"')"'
         if `"`xtitle'"'!=""  local opts `"`opts' xtitle(`"`xtitle'"')"'
@@ -209,6 +212,19 @@ program define barttest
         * x-axis label (use value label if available)
         local vl : label (`gv') `g'
         local xlab `xlab' `i' `"`vl'"'
+        * resolve this bar's colour: default = barcolor; an explicit
+        * colors("group=colour") mapping overrides it (key = value label or value)
+        local gcol`g' "`barcolor'"
+        if `"`colors'"'!="" {
+            foreach kv of local colors {
+                local eq = strpos(`"`kv'"',"=")
+                if `eq' {
+                    local kk = substr(`"`kv'"',1,`eq'-1)
+                    local cc = substr(`"`kv'"',`eq'+1,.)
+                    if `"`kk'"'==`"`vl'"' | `"`kk'"'=="`g'" local gcol`g' `"`cc'"'
+                }
+            }
+        }
     }
 
     * ---- comparisons ----
@@ -259,7 +275,13 @@ program define barttest
 
     * ---- build twoway layers ----
     local fmt "%9.`decimals'f"
-    local plot `"(bar `mean' `xpos', barwidth(`barwidth') color("`barcolor'")) "'
+    * one bar layer per group so each can take its own colour (see colors())
+    local plot ""
+    local bi = 0
+    foreach g of local glevs {
+        local ++bi
+        local plot `"`plot' (bar `mean' `xpos' if _n==`bi', barwidth(`barwidth') color("`gcol`g''")) "'
+    }
     local plot `"`plot' (rcap `hi' `lo' `xpos', lcolor(`capcolor') lwidth(medthick)) "'
 
     * mean value labels (optional, position configurable)
