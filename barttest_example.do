@@ -101,7 +101,7 @@ barttest outcome, by(treat) barcolor(navy) capcolor(maroon)
 * E2b. Give each group its own colour with value=colour pairs. The key is the
 *      group's value label, or its raw value (use the raw value when the label
 *      contains spaces). Here treat is 1-4, so map the values directly.
-barttest outcome, by(treat) colors(1=blue 2=green 3=gs8 4=black)
+barttest outcome, by(treat) bycolors(1=blue 2=green 3=gs8 4=black)
 
 * E3. A polished, publication-style figure combining many options
 barttest outcome, by(treat) stars ///

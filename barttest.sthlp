@@ -106,9 +106,9 @@ against it. Overrides {opt compare()}.
 {phang}{opt barcolor(string)} / {opt capcolor(string)} set the bar and error-bar
 colors (one colour for all bars).
 
-{phang}{opt colors(string)} gives specific bars their own colour as
+{phang}{opt bycolors(string)} gives specific bars their own colour as ({opt colors()} still works) 
 {it:value=colour} pairs, e.g.
-{cmd:colors(KMT=blue DPP=green TPP=gs8 中立無反應=black)}. The key may be the
+{cmd:bycolors(North=navy South=forest_green East=orange West=gs7)}. The key may be the
 group's value label or its raw value (use the raw value when the label contains
 spaces); bars not listed keep {opt barcolor()}.
 

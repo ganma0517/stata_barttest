@@ -1,61 +1,71 @@
-*! barttest v1.6  2Jun2026
+*! barttest v1.7  8Jun2026
 *! Bar chart of group means with CI error bars and pairwise t-test brackets
 *! Significant comparison -> solid bracket; non-significant -> dashed bracket
 *!
 *! Syntax:
 *!   barttest depvar , by(groupvar) [ options ]
 *!
-*! Options:
-*!   by(varname)        grouping variable (required)
+*! ---- required ----
+*!   by(varname)        grouping variable
+*!
+*! ---- which comparisons & significance ----
+*!   compare(string)    space-separated pairs "a/b c/d ..." using group VALUES;
+*!                      default = adjacent pairs in sorted group order
+*!   base(#)            reference group: compare every other group against it
+*!                      (overrides compare()); e.g. base(1) -> 1 vs each other
 *!   level(#)           confidence level for CI error bars (default 95)
 *!   alpha(#)           significance threshold for solid vs dashed (default .05)
-*!   compare(string)    space-separated pairs "a/b c/d ..." using group VALUES.
-*!                      default = adjacent pairs in sorted group order.
-*!   base(#)            reference group: compare every other group against it
-*!                      (overrides compare()). e.g. base(1) -> 1 vs each other.
 *!   stars              label brackets with significance stars instead of p-value
 *!                      (* p<.05, ** p<.01, *** p<.001, ns otherwise)
-*!   panel(varname)     facet: draw one sub-plot per level and combine them
+*!
+*! ---- faceting (small multiples) ----
+*!   panel(varname)     draw one sub-plot per level and combine them
 *!   cols(#)            number of columns when faceting (default: auto)
-*!   title(string)      graph title
-*!   ytitle(string)     y-axis title (default = depvar label)
-*!   xtitle(string)     x-axis title (default = groupvar label)
-*!   ylabel(string)     full y-axis label spec (default ", angle(0)").
-*!                      With a rule: ylabel(0(20)100, angle(0) grid)
-*!                      Suboptions only: prefix a comma -> ylabel(, labsize(small))
-*!   xlabel(string)     EXTRA x-axis label suboptions appended after the group
-*!                      position labels (which are always kept). e.g.
-*!                      xlabel(labsize(small) angle(45))
+*!
+*! ---- bars & colours ----
 *!   barwidth(#)        bar width (default 0.6)
-*!   barcolor(string)   bar fill color for all bars (default "26 71 95")
-*!   colors(string)     explicit colour per group as value=colour pairs, e.g.
-*!                      colors(KMT=blue DPP=green TPP=gs8 中立無反應=black)
-*!   capcolor(string)   error-bar color (default red)
-*!   decimals(#)        decimals shown for means/diff (default 1)
+*!   barcolor(string)   bar fill colour for all bars (default "26 71 95")
+*!   bycolors(string)   explicit colour per group, as value=colour pairs, e.g.
+*!                      bycolors(North=navy South=forest_green West=gs7)
+*!                      (colors() is kept as a backward-compatible alias)
+*!   capcolor(string)   error-bar colour (default red)
+*!
+*! ---- value labels on bars ----
 *!   novalues           do NOT print the mean value label on each bar
-*!   valpos(string)     position of the mean value label: top (above the CI,
-*!                      default) | mean (at the bar top) | inbar (inside bar)
+*!   valpos(string)     mean label position: top (above the CI, default) |
+*!                      mean (at the bar top) | inbar (inside bar)
 *!   valsize(string)    text size of the mean value label (default small)
+*!   decimals(#)        decimals shown for means/diff (default 1)
 *!   labsize(string)    text size of the diff/p (or stars) bracket label
+*!
+*! ---- axes, titles, output ----
+*!   ytitle/xtitle/title(string)   titles (default y/x = variable labels)
+*!   ylabel(string)     full y-axis label spec (e.g. ylabel(0(20)100, grid))
+*!   xlabel(string)     EXTRA x-axis label suboptions (group labels kept)
 *!   saving(string)     export path (e.g. "$out/fig.png")
 *!   name(string)       graph window name (default barttest)
 
 program define barttest
     version 16.0
-    syntax varname(numeric) [if] [in], by(varname) ///
-        [ Level(real 95) Alpha(real 0.05) Compare(string) ///
-          BASE(string) STARs ///
-          PANel(varname) COLs(integer 0) YCOMMON ///
-          YTOPForce(real -1) ///
-          title(string asis) ytitle(string asis) xtitle(string asis) ///
-          YLABel(string asis) XLABel(string asis) ///
-          BARWidth(real 0.6) ///
-          BARcolor(string) COLORS(string asis) CAPcolor(string) Decimals(integer 1) ///
-          NOVALues VALPos(string) VALSize(string) LABSize(string) ///
+    syntax varname(numeric) [if] [in], by(varname)                       ///
+        [                                                                ///
+          Compare(string) BASE(string) STARs                            /// comparisons
+          Level(real 95) Alpha(real 0.05)                               /// significance
+          PANel(varname) COLs(integer 0) YCOMMON YTOPForce(real -1)     /// faceting
+          BARWidth(real 0.6) BARcolor(string)                           /// bars
+          BYColors(string asis) COLORS(string asis) CAPcolor(string)    /// colours
+          NOVALues VALPos(string) VALSize(string) Decimals(integer 1)   /// value labels
+          LABSize(string)                                               ///
+          title(string asis) ytitle(string asis) xtitle(string asis)    /// titles
+          YLABel(string asis) XLABel(string asis)                       /// axes
           saving(string) name(string) ]
 
     local dv `varlist'
     local gv `by'
+
+    * bycolors() is the documented name; colors() kept as backward-compatible alias
+    if `"`bycolors'"'=="" local bycolors `"`colors'"'
+    local colors `"`bycolors'"'
 
     * =====================================================
     * PANEL MODE: draw one barttest per level of panel()

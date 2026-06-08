@@ -102,14 +102,14 @@ barttest resp, by(arm) panel(site) stars ycommon
 
 ![panel example](example_panel.png)
 
-## Colour each bar — `colors()`
+## Colour each bar — `bycolors()`
 
 Give specific groups their own bar colour with `value=colour` pairs. The key is
 the group's value label, or its raw value (use the raw value when the label
 contains spaces). Groups you don't list keep `barcolor()`.
 
 ```stata
-barttest support, by(party) colors(KMT=blue DPP=green TPP=gs8 中立無反應=black)
+barttest outcome, by(treat) bycolors(1=navy 2=forest_green 3=orange 4=gs7)
 ```
 
 ![colours by group](example_colors.png)
@@ -133,7 +133,7 @@ barttest depvar [if] [in], by(groupvar) [options]
 | `ycommon` | shared y-axis across panels (matching bar heights) | off |
 | `barwidth(#)` | bar width | 0.6 |
 | `barcolor()` `capcolor()` | bar / error-bar colors (all bars) | navy / red |
-| `colors()` | explicit colour per group, e.g. `colors(KMT=blue DPP=green TPP=gs8)` | — |
+| `bycolors()` | explicit colour per group, e.g. `bycolors(North=navy South=forest_green)` (alias `colors()`) | — |
 | `decimals(#)` | decimals for means and diff | 1 |
 | `novalues` | hide the mean value label on each bar | off |
 | `valpos()` | value-label position: `top` / `mean` / `inbar` (centered) | top |
